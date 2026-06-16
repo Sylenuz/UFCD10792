@@ -1,0 +1,79 @@
+POST http://localhost:2525/imposters
+Content-Type: application/json
+ 
+{
+   "name":"ex5",
+   "port":4006,
+   "protocol":"http",
+   "stubs":[
+      {
+         "responses":[
+            {
+               "is":{
+                  "statusCode":200,
+                  "headers":{
+                     "Content-Type":"application/json"
+                  },
+                  "body":{
+                     "validacao":"ok",
+                     "token":"valide"
+                  }
+               }
+            }
+         ],
+         "predicates":[
+            {
+               
+               "deepEquals":{
+                  "path":"/api/login",
+                  "method":"POST",
+                  
+                     "body":{
+                        "username":"admin",
+                        "password":"secret"
+                     }
+    
+               },
+               "caseSensitive":true
+            }
+         ]
+      },
+      {
+         "responses": [
+            {
+               "is": {
+                  "statusCode": 400,
+                  "headers": { "Content-Type": "application/json" },
+                  "body": {
+                     "info": "nao."
+                  }
+               }
+            }
+         ],
+         "predicates": [
+            {
+               "equals": {
+                  "path": "/api/login",
+                  "method": "POST"
+               }
+            },
+            {
+               "not": {
+                  "contains": { "body": "requiredField" },
+                  "caseSensitive": true
+               }
+            }
+         ]
+      }
+   ]
+}
+###
+DELETE http://localhost:2525/imposters/4006
+###
+POST http://localhost:4006/api/login
+Content-Type: application/json
+ 
+{
+    "username":"a",
+    "password":"b"
+}

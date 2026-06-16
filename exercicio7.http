@@ -1,0 +1,54 @@
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+   "name":"ex7",
+   "port":4008,
+   "protocol":"http",
+   "stubs":[
+      {
+         "responses":[
+            {
+               "is":{
+                  "statusCode":200,
+                  "headers":{
+                     "Content-Type":"application/json",
+                  "location":"api/user{1}"
+                  },
+                  "body":{
+                     "email":"account created"
+                  }
+               }
+            }
+         ],
+         "predicates":[
+            {
+               "equals":{
+                  "path":"/api/users",
+                  "method":"POST"
+               }
+            },
+            {
+               "not":{
+                  "contains":{
+                     "body":{
+                        "email":"exists@example.com"
+                     }
+                  }
+               },
+               "caseSensitive":true
+            }
+         ]
+      }
+   ]
+}
+###
+DELETE http://localhost:2525/imposters/4008
+###
+POST http://localhost:4008/api/users
+Content-Type: application/json
+ 
+{
+    "Name":"Daniel",
+    "email":"exists@example.com"
+}

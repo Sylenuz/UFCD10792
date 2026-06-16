@@ -1,0 +1,86 @@
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+   "name":"ex13",
+   "port":4014,
+   "protocol":"http",
+   "stubs":[
+      {
+         "responses":[
+            {
+               "is":{
+                  "statusCode":200,
+                  "headers":{
+                     "Content-Type":"application/json",
+                     "location":"api/user{1}"
+                  },
+                  "body":{
+                     "token":"valid",
+                     "username":"dada",
+                     "email":"a@mail.com"
+                  }
+               }
+            }
+         ],
+         "predicates":[
+            {
+               "equals":{
+                  "path":"/api/profile",
+                  "method":"GET",
+                  "headers":{
+                    "Authorization":"Bearer validtoken"
+                  }
+               }
+            },
+            {
+               "not":{
+                  "contains":{
+                     "body":{}
+                  }
+               },
+               "caseSensitive":true
+            }
+         ]
+      },
+      {
+         "responses":[
+            {
+               "is":{
+                  "statusCode":403,
+                  "headers":{
+                     "Content-Type":"application/json",
+                     "location":"api/user{1}"
+                  },
+                  "body":{
+                     "token":"invalid",
+                     "error":"forbiden"
+                  }
+               }
+            }
+         ],
+         "predicates":[
+            {
+               "equals":{
+                  "path":"/api/profile",
+                  "method":"GET"
+               }
+            },
+            {
+               "not":{
+                  "contains":{
+                     "body":{}
+                  }
+               },
+               "caseSensitive":true
+            }
+         ]
+      }
+   ]
+}
+
+###
+DELETE http://localhost:2525/imposters/4014
+###
+GET http://localhost:4014/api/profile
+Authorization:Bearer validtoken

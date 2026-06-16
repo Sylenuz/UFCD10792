@@ -1,0 +1,77 @@
+POST http://localhost:2525/imposters
+Content-Type: application/json
+ 
+{
+   "name":"ex3",
+   "port": 4004,
+   "protocol": "http",
+   "stubs": [
+      {
+         "responses": [
+            {
+               "is": {
+                  "statusCode": 200,
+                  "headers": { "Content-Type": "application/json" },
+                  "body": {
+                     "brand": "Toyota",
+                     "info": {
+                        "id": "1",
+                        "model": "Supra",
+                        "Price": "100"
+                     }
+                  }
+               }
+            }
+         ],
+         "predicates": [
+            {
+               "equals": {
+                  "path": "/api/cars",
+                  "method": "GET",
+                  "query": { "brand": "Toyota" }
+               }
+            },
+            {
+               "not": {
+                  "contains": { "body": "requiredField" },
+                  "caseSensitive": true
+               }
+            }
+         ]
+      },
+      {
+         "responses": [
+            {
+               "is": {
+                  "statusCode": 400,
+                  "headers": { "Content-Type": "application/json" },
+                  "body": {
+                     "info": "nao."
+                  }
+               }
+            }
+         ],
+         "predicates": [
+            {
+               "equals": {
+                  "path": "/api/cars",
+                  "method": "GET"
+               }
+            },
+            {
+               "not": {
+                  "contains": { "body": "requiredField" },
+                  "caseSensitive": true
+               }
+            }
+         ]
+      }
+   ]
+}
+###
+DELETE http://localhost:2525/imposters/4004
+###
+GET http://localhost:4004/api/cars?brand=Toyot
+Content-Type: application/json
+ 
+{"optionalField": true}

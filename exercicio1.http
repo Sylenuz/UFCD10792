@@ -1,0 +1,45 @@
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "name":"ex1",
+  "port": 4002,
+  "protocol": "http",
+  "stubs": [{
+    "responses": [
+      { "is": { 
+        "statusCode": 200,
+        "body": {
+            "marcas":[
+                "BMW",
+                "Mercedes",
+                "Yamaha"
+            ]
+        }
+        }
+      }
+    ],
+    "predicates": [{
+      "and": [
+        {
+          "equals": {
+            "path": "/api/marcas",
+            "method": "GET",
+            "headers": { "Content-Type": "application/json" }
+          }
+        },
+        {
+          "not": {
+            "contains": { "body": "requiredField" },
+            "caseSensitive": true
+          }
+        }
+      ]
+    }]
+  }]
+}
+###
+DELETE http://localhost:2525/imposters/4002
+###
+GET http://localhost:4002/api/marcas
+Content-Type: application/json

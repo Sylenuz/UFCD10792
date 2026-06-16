@@ -1,0 +1,52 @@
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+   "name":"ex9",
+   "port":4010,
+   "protocol":"http",
+   "stubs":[
+      {
+         "responses":[
+            {
+               "is":{
+                  "statusCode":201,
+                  "headers":{
+                     "Content-Type":"application/json"
+                  },
+                  "body":{
+                     "status":"sucsess"
+                  }
+               }
+            }
+         ],
+         "predicates":[
+            {
+               "equals":{
+                  "path":"/api/temperature",
+                  "method":"POST"
+               }
+            },
+            {
+                  "contains":{
+                     "body":{
+                        "value":"10",
+                        "sensor_id":"67"
+                     }
+                  },
+               "caseSensitive":true
+            }
+         ]
+      }
+   ]
+}
+###
+DELETE http://localhost:2525/imposters/4010
+###
+POST http://localhost:4010/api/temperature
+Content-Type: application/json
+ 
+ {
+    "value":"10",
+                        "sensor_id":"67"
+ }

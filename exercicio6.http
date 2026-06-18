@@ -1,0 +1,190 @@
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "name":"ex6",
+  "port":4006,
+  "protocol":"http",
+  "stubs":[
+    {
+      "responses":[{
+        "is":{
+          "statusCode":400,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"erro":"campos obrigatórios em falta: título e descrição"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/tarefas","method":"POST"}},
+        {"or":[
+          {"exists":{"body":{"titulo":false}}},
+          {"exists":{"body":{"descricao":false}}}
+        ]}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":400,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"erro":"o título não pode ser vazio"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/tarefas","method":"POST"}},
+        {"deepEquals":{"body":{"titulo":""}}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":201,
+          "headers":{"Content-Type":"application/json"},
+          "body":{
+            "mensagem":"tarefa criada com sucesso",
+            "id":10,
+            "titulo":"agendar formação",
+            "descricao":"organizar sessão de formação interna",
+            "estado":"pendente"
+          }
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/tarefas","method":"POST"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":200,
+          "headers":{"Content-Type":"application/json"},
+          "body":{
+            "mensagem":"tarefa atualizada com sucesso",
+            "id":1,
+            "titulo":"repor material de escritório",
+            "descricao":"ir à papelaria do centro",
+            "estado":"concluída"
+          }
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/tarefas/1","method":"PUT"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":409,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"erro":"não é possível eliminar tarefas que ainda não estão concluídas"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/tarefas/2","method":"DELETE"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":200,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"mensagem":"tarefa eliminada com sucesso"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/tarefas/1","method":"DELETE"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":200,
+          "headers":{"Content-Type":"application/json"},
+          "body":{
+            "id":1,
+            "titulo":"repor material de escritório",
+            "descricao":"ir à papelaria do centro",
+            "estado":"pendente"
+          }
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/tarefas/1","method":"GET"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":200,
+          "headers":{"Content-Type":"application/json"},
+          "body":[
+            {"id":1,"titulo":"repor material de escritório","descricao":"ir à papelaria do centro","estado":"pendente"},
+            {"id":2,"titulo":"atualizar documentação","descricao":"rever manual técnico","estado":"pendente"},
+            {"id":3,"titulo":"submeter fatura","descricao":"enviar fatura do mês","estado":"concluída"}
+          ]
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/tarefas","method":"GET"}}
+      ]
+    }
+  ]
+}
+
+###
+GET http://localhost:4006/api/tarefas
+Content-Type: application/json
+
+###
+GET http://localhost:4006/api/tarefas/1
+Content-Type: application/json
+
+###
+POST http://localhost:4006/api/tarefas
+Content-Type: application/json
+
+{
+  "titulo":"nova tarefa"
+}
+
+###
+POST http://localhost:4006/api/tarefas
+Content-Type: application/json
+
+{
+  "titulo":"",
+  "descricao":"erro"
+}
+
+###
+POST http://localhost:4006/api/tarefas
+Content-Type: application/json
+
+{
+  "titulo":"agendar formacao",
+  "descricao":"organizar sessao de formacao"
+}
+
+###
+PUT http://localhost:4006/api/tarefas/1
+Content-Type: application/json
+
+{
+  "descricao":"ir à papelaria do centro",
+  "estado":"concluida"
+}
+
+###
+DELETE http://localhost:4006/api/tarefas/2
+Content-Type: application/json
+
+###
+DELETE http://localhost:4006/api/tarefas/1
+Content-Type: application/json
+
+
+
+
+
+
+//daniel

@@ -1,0 +1,190 @@
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "name":"ex3",
+  "port":4003,
+  "protocol":"http",
+  "stubs":[
+    {
+      "responses":[{
+        "is":{
+          "statusCode":400,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"error":"a data de saída não pode ser anterior à data de entrada"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/reservas","method":"POST"}},
+        {"equals":{"body":{"checkout":"2026-06-10"}}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":409,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"error":"quarto indisponível para as datas selecionadas"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/reservas","method":"POST"}},
+        {"equals":{"body":{"tipo_quarto":"suite presidencial"}}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":201,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"mensagem":"reserva registada com sucesso","id":103}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/reservas","method":"POST"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":200,
+          "headers":{"Content-Type":"application/json"},
+          "body":[
+            {"id":1,"cliente":"francisca","checkin":"2026-08-10","checkout":"2026-08-15","tipo_quarto":"duplo"},
+            {"id":2,"cliente":"tiago","checkin":"2026-04-12","checkout":"2026-04-17","tipo_quarto":"familiar"}
+          ]
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/reservas","method":"GET"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":400,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"erro":"não é possível alterar a reserva após o prazo permitido"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/reservas/2","method":"PUT"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":200,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"mensagem":"reserva atualizada com sucesso"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/reservas/1","method":"PUT"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":400,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"erro":"cancelamento não permitido após o início da estadia"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/reservas/2","method":"DELETE"}}
+      ]
+    },
+    {
+      "responses":[{
+        "is":{
+          "statusCode":200,
+          "headers":{"Content-Type":"application/json"},
+          "body":{"mensagem":"reserva cancelada com sucesso"}
+        }
+      }],
+      "predicates":[
+        {"equals":{"path":"/api/reservas/1","method":"DELETE"}}
+      ]
+    }
+  ]
+}
+
+
+###
+GET http://localhost:4003/api/reservas
+Content-Type: application/json
+
+
+###
+POST http://localhost:4003/api/reservas
+Content-Type: application/json
+
+{
+  "cliente":"Bernardo",
+  "checkin":"2026-06-18",
+  "checkout":"2026-06-10",
+  "tipo_quarto":"standard"
+}
+
+
+###
+POST http://localhost:4003/api/reservas
+Content-Type: application/json
+
+{
+  "cliente":"Leticia",
+  "checkin":"2026-08-01",
+  "checkout":"2026-08-06",
+  "tipo_quarto":"suite presidencial"
+}
+
+###
+POST http://localhost:4003/api/reservas
+Content-Type: application/json
+
+{
+  "cliente":"Renata",
+  "checkin":"2026-08-01",
+  "checkout":"2026-08-06",
+  "tipo_quarto":"duplo"
+}
+
+###
+PUT http://localhost:4003/api/reservas/1
+Content-Type: application/json
+
+{
+  "tipo_quarto":"familiar"
+}
+
+
+###
+PUT http://localhost:4003/api/reservas/2
+Content-Type: application/json
+
+{
+  "tipo_quarto":"duplo"
+}
+
+
+###
+DELETE http://localhost:4003/api/reservas/2
+Content-Type: application/json
+
+
+###
+DELETE http://localhost:4003/api/reservas/1
+Content-Type: application/json
+
+
+
+
+
+
+
+
+
+
+
+//daniel
